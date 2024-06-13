@@ -11,7 +11,6 @@ from math import acos as acos
 from math import asin as asin
 from math import sqrt as sqrt
 from math import pi as pi
-from sympy import symbols
 
 
 
@@ -26,15 +25,11 @@ global d, a, alph
 
 d = mat([0.1273, 0, 0, 0.163941, 0.1157, 0.0922])#ur10 m
 
-a =mat([0 ,-0.612 ,-0.5723 ,0 ,0 ,0])#ur10 m
+a =mat([0 ,-0.612 ,-0.5723 ,0 ,0 ,0])#ur10    m
 
 alph = mat([pi/2, 0, 0, pi/2, -pi/2, 0 ]) # ur10
 
 
-
-# d = mat([-400,0,0,-620,0,-80]) #kr5
-# a = mat([0,180,600,40,0,0])    #kr5
-# alph = mat([-pi,pi/2,0,pi/2,-pi/2,pi/2])
 
 
 # ************************************************** FORWARD KINEMATICS
@@ -80,9 +75,13 @@ def HTrans(th):
 
 
 if __name__ =="__main__":
-  th = [0,0,0,0,0,0]
+  th = [-18.966, -72.777 ,7.720-90, 15.494 ,51.803, 170.749]
+  th =[0,0,-90,0,0,0]
+  th = np.deg2rad(th)
   mat1 = HTrans(th)
   print(mat1)
+  tcp = np.array([-5,10,-80.9,1]).reshape(4,1)
+  print(mat1@tcp)
 
  
  
