@@ -23,12 +23,21 @@ points = [
 
 ]
 
-
-'''     
-        [310.96,-121.61,-125.31,12.14,48.5,187.06],
-          
+'''
+find solution:  [[-0.00624954]
+ [-0.22429878]
+ [ 0.37709918]]
+current best average dist:  1.5569158712564e-16
+current max dist:  2.747498596334823e-16
+current min dist:  5.494997192669647e-17
 
 '''
+
+
+
+
+
+
 
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
@@ -47,16 +56,6 @@ Z = points_array[:, 2]
 # print("point coordinate: " ,points_array)
 ax.scatter(X, Y, Z, color='r', label='Points')
 plt.show()
-
-'''
-find solution:  [[-0.07787012]
- [-0.35474251]
- [-0.08979831]]
-current best average dist:  1.686715923615746e-05
-current max dist:  5.060147770858446e-05
-current min dist:  3.382514572677121e-07
-
-'''
 
 test_joint_angles_radians = [np.array(angles) * np.pi / 180 for angles in points] # 输出结果 test_joint_angles_radians
 data = OMOPSO(test_joint_angles_radians)

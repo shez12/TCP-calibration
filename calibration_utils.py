@@ -104,7 +104,7 @@ class OMOPSO:
             tuple: A tuple containing the minimum cost and corresponding joint variables.
         """
         def line_decrease(iteration,max_iters):
-            return 0.9-0.6*(iteration/max_iters)
+            return 0.9-0.5*(iteration/max_iters)
 
         print("solving equations")
         swarm_size = 200
@@ -113,7 +113,7 @@ class OMOPSO:
         lower_bound = np.array([-0.1,-0.3,0.2])
         upper_bound = np.array([0.1,0,0.5])
         constraints = (lower_bound, upper_bound)
-        max_iters = 300
+        max_iters = 500
         optimizer = ps.single.GlobalBestPSO(
             n_particles=swarm_size,
             dimensions=dim,
@@ -179,7 +179,7 @@ class OMOPSO:
         Z_plane = (-a * X_plane - b * Y_plane - d) / c
     
         # Plot the plane
-        # ax.plot_surface(X_plane, Y_plane, Z_plane, color='r', alpha=0.5, label='Fitted Plane')
+        ax.plot_surface(X_plane, Y_plane, Z_plane, color='r', alpha=0.5, label='Fitted Plane')
     
         # Set labels
         ax.set_xlabel('X')
@@ -194,7 +194,7 @@ class OMOPSO:
 
     def verify(self):
         
-        threshold = 0.002
+        threshold = 0.0001
         dist_list = self.dist()
         n=0
         while np.mean(dist_list)>threshold:
