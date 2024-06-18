@@ -23,6 +23,11 @@ class OMOPSO:
 
 
     def vectorchoose(self):
+        '''
+        Choose three points(joint angles) to find a normal vector.
+        
+        '''
+
         randomPlane=[]
         while (len(randomPlane)<3):
             random_num = random.randint(0,len(self.joint_angle_list)-1)
@@ -42,7 +47,6 @@ class OMOPSO:
 
         Returns:
             List of float: The calculated error metric.
-
         """
 
         vector_choose = self.choose
@@ -94,12 +98,7 @@ class OMOPSO:
 
     def omopso(self):
         """
-        Performs PSO (Particle Swarm Optimization) to minimize the error metric.
-
-        Args:
-            lower_bound: A 3x1 NumPy array representing the lower bounds for TCP coordinates.
-            upper_bound: A 3x1 NumPy array representing the upper bounds for TCP coordinates.
-
+        Performs globalBestPSO to minimize the error metric.
         Returns:
             tuple: A tuple containing the minimum cost and corresponding joint variables.
         """
@@ -134,7 +133,10 @@ class OMOPSO:
 
 
     def dist(self):
-        #find each points coordinate
+        '''
+        Find the distance from each point to the plane.
+        
+        '''
         points = []
         for joint_angle in self.joint_angle_list:
             fk_t = fk.HTrans(joint_angle)
@@ -164,6 +166,13 @@ class OMOPSO:
 
     
     def plot_plane(self,X,Y,Z,C):
+        '''
+        plot the plane and points.
+        Args:
+            X,Y,Z: point coordinate
+            C: plane coefficient
+        
+        '''
         a,b,c,d = C
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
@@ -193,6 +202,9 @@ class OMOPSO:
 
 
     def verify(self):
+        '''
+        verify the solution.
+        '''
         
         threshold = 0.0001
         dist_list = self.dist()
@@ -218,6 +230,13 @@ class OMOPSO:
 
 
     def plot_info(self,data):
+        '''
+
+        plot the statistical information of the data.
+
+        '''
+
+
         data = [i*1000 for i in data]
         max_val = np.max(data)
         min_val = np.min(data)

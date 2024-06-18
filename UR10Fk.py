@@ -76,7 +76,7 @@ def HTrans(th):
 
 if __name__ =="__main__":
   th = [-18.966, -72.777 ,7.720-90, 15.494 ,51.803, 170.749]
-  th =[0,0,-90,0,0,0]
+  th =[0,0,0,0,0,0]
   th = np.deg2rad(th)
   mat1 = HTrans(th)
   print(mat1)
