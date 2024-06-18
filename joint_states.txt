@@ -1,0 +1,29 @@
+Joint Names: ['elbow_joint', 'shoulder_lift_joint', 'shoulder_pan_joint', 'wrist_1_joint', 'wrist_2_joint', 'wrist_3_joint']
+Joint Positions: (-1.973229710255758, -2.266231362019674, 4.568862438201904, 0.18097496032714844, 2.2883529663085938, 3.265540599822998)
+
+Joint Names: ['elbow_joint', 'shoulder_lift_joint', 'shoulder_pan_joint', 'wrist_1_joint', 'wrist_2_joint', 'wrist_3_joint']
+Joint Positions: (-1.9732659498797815, -2.2662671248065394, 4.568874359130859, 0.18095099925994873, 2.2883646488189697, 3.2655887603759766)
+
+Joint Names: ['elbow_joint', 'shoulder_lift_joint', 'shoulder_pan_joint', 'wrist_1_joint', 'wrist_2_joint', 'wrist_3_joint']
+Joint Positions: (-1.9732535521136683, -2.2662552038775843, 4.5688982009887695, 0.18097496032714844, 2.2883291244506836, 3.2655646800994873)
+
+Joint Names: ['elbow_joint', 'shoulder_lift_joint', 'shoulder_pan_joint', 'wrist_1_joint', 'wrist_2_joint', 'wrist_3_joint']
+Joint Positions: (-1.973229710255758, -2.2662671248065394, 4.568874359130859, 0.18098688125610352, 2.2883291244506836, 3.2655646800994873)
+
+Joint Names: ['elbow_joint', 'shoulder_lift_joint', 'shoulder_pan_joint', 'wrist_1_joint', 'wrist_2_joint', 'wrist_3_joint']
+Joint Positions: (-1.9732421080218714, -2.266243282948629, 4.5688982009887695, 0.18095099925994873, 2.2883529663085938, 3.2655887603759766)
+
+Joint Names: ['elbow_joint', 'shoulder_lift_joint', 'shoulder_pan_joint', 'wrist_1_joint', 'wrist_2_joint', 'wrist_3_joint']
+Joint Positions: (-1.973229710255758, -2.2662552038775843, 4.5688982009887695, 0.18095099925994873, 2.2883529663085938, 3.2656006813049316)
+
+Joint Names: ['elbow_joint', 'shoulder_lift_joint', 'shoulder_pan_joint', 'wrist_1_joint', 'wrist_2_joint', 'wrist_3_joint']
+Joint Positions: (-1.9732659498797815, -2.266243282948629, 4.568862438201904, 0.1809629201889038, 2.2883646488189697, 3.2655527591705322)
+
+Joint Names: ['elbow_joint', 'shoulder_lift_joint', 'shoulder_pan_joint', 'wrist_1_joint', 'wrist_2_joint', 'wrist_3_joint']
+Joint Positions: (-1.973229710255758, -2.2662552038775843, 4.5688862800598145, 0.1809389591217041, 2.2883410453796387, 3.2655887603759766)
+
+Joint Names: ['elbow_joint', 'shoulder_lift_joint', 'shoulder_pan_joint', 'wrist_1_joint', 'wrist_2_joint', 'wrist_3_joint']
+Joint Positions: (-1.973229710255758, -2.2662671248065394, 4.5688982009887695, 0.1809629201889038, 2.2883291244506836, 3.2655527591705322)
+
+Joint Names: ['elbow_joint', 'shoulder_lift_joint', 'shoulder_pan_joint', 'wrist_1_joint', 'wrist_2_joint', 'wrist_3_joint']
+Joint Positions: (-1.973217789326803, -2.266243282948629, 4.568874359130859, 0.18099892139434814, 2.2883169651031494, 3.2655527591705322)

@@ -36,8 +36,10 @@ alph = mat([pi/2, 0, 0, pi/2, -pi/2, 0 ]) # ur10
 
 def AH( n,th  ):
   '''
-  n: which joint
-  th: joint angle list
+  args:
+  n: int, the number of the joint
+  th: list, the joint angles(rad)
+
   '''
 
   T_a = mat(np.identity(4), copy=False)
@@ -61,7 +63,12 @@ def AH( n,th  ):
 
   return A_i
 
-def HTrans(th):  
+def HTrans(th): 
+  '''
+  args:
+  th: list, the joint angles(rad)
+  '''
+
   A_1=AH( 1,th )
   A_2=AH( 2,th )
   A_3=AH( 3,th )

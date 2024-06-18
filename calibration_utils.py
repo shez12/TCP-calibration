@@ -17,6 +17,7 @@ class OMOPSO:
 
         Args:
             joint_angle_list: List of joint angles in radians, where each list element represents a robot configuration.
+                                size>=6
         """
         self.joint_angle_list = joint_angle_list
         self.choose = self.vectorchoose()
@@ -26,10 +27,13 @@ class OMOPSO:
         '''
         Choose three points(joint angles) to find a normal vector.
         
+        
         '''
+        if len(self.joint_angle_list)<6:
+            raise KeyError("joint angle list is too short")
 
         randomPlane=[]
-        while (len(randomPlane)<3):
+        while (len(randomPlane)<6):
             random_num = random.randint(0,len(self.joint_angle_list)-1)
             randomPlane.append(random_num)
             randomPlane = list(np.unique(randomPlane))
@@ -60,15 +64,14 @@ class OMOPSO:
             fk_t = fk.HTrans(self.joint_angle_list[0])
             fk_r1 = fk_t[0:3, 0:3]  # Rotation matrix
             fk_p1 = fk_t[0:3, 3]  # Position vector
-            for i in vector_choose[1:]:
+            for i in vector_choose[1:3]:
                 fk_t2 = fk.HTrans(self.joint_angle_list[i])
                 fk_r2 = fk_t2[0:3, 0:3]
                 fk_p2 = fk_t2[0:3, 3]
                 vector_list.append(fk_r2 @ tcp - fk_r1 @ tcp + fk_p2 - fk_p1)
            
             vector_list2 = []
-            for i in range(len(self.joint_angle_list)):
-                if (i not in vector_choose):
+            for i in vector_choose[3:]:
                     fk_t3 = fk.HTrans(self.joint_angle_list[i])
                     fk_r3 = fk_t3[0:3, 0:3]
                     fk_p3 = fk_t3[0:3, 3]

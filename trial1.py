@@ -37,6 +37,7 @@ ax = fig.add_subplot(111, projection='3d')
 # Plot the points
 points_array = []
 for joint_angle in points:
+        joint_angle = np.array(joint_angle) * np.pi / 180
         fk_t = fk.HTrans(joint_angle)
         points_array.append(fk_t[0:3, 3])
 
