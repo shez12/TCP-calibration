@@ -1,16 +1,7 @@
 import numpy as np
 from calibration_utils import OMOPSO
-import matplotlib.pyplot as plt
-import UR10Fk as fk
 
-# points = [
-#         [273.41,-121.61,-96.71,-28.52,107.21,188.94],
-#         [273.36,-121.84,-96.67,-31.06,109.41,188.95],
-#         [273.33,-121.78,-96.72,-32.66,109.56,188.95],
-#         [273.35,-123.04,96.04,-25.73,110.99,188.94],
-#         [273.38,-123.59,-95.99,-25.44,112.73,188.95],
-#         [273.38,-123.94,-95.7,-22.6,112.53,188.94]
-# ]
+
 
 points = [
          [312.97,-127.67,-116.68,1.65,39.17,187.07],
@@ -32,24 +23,24 @@ current min dist:  5.494997192669647e-17
 
 '''
 
-fig = plt.figure()
-ax = fig.add_subplot(111, projection='3d')
-# Plot the points
-points_array = []
-for joint_angle in points:
-        joint_angle = np.array(joint_angle) * np.pi / 180
-        fk_t = fk.HTrans(joint_angle)
-        points_array.append(fk_t[0:3, 3])
+# fig = plt.figure()
+# ax = fig.add_subplot(111, projection='3d')
+# # Plot the points
+# points_array = []
+# for joint_angle in points:
+#         joint_angle = np.array(joint_angle) * np.pi / 180
+#         fk_t = fk.HTrans(joint_angle)
+#         points_array.append(fk_t[0:3, 3])
 
-points_array = np.array([np.array(point).flatten() for point in points_array])
-# Extract X, Y, Z coordinates
-X = points_array[:, 0]
-Y = points_array[:, 1]
-Z = points_array[:, 2]
+# points_array = np.array([np.array(point).flatten() for point in points_array])
+# # Extract X, Y, Z coordinates
+# X = points_array[:, 0]
+# Y = points_array[:, 1]
+# Z = points_array[:, 2]
 
-# print("point coordinate: " ,points_array)
-ax.scatter(X, Y, Z, color='r', label='Points')
-plt.show()
+# # print("point coordinate: " ,points_array)
+# ax.scatter(X, Y, Z, color='r', label='Points')
+# plt.show()
 
 test_joint_angles_radians = [np.array(angles) * np.pi / 180 for angles in points] # 输出结果 test_joint_angles_radians
 data = OMOPSO(test_joint_angles_radians)

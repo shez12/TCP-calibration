@@ -81,14 +81,5 @@ def HTrans(th):
   return T_06
 
 
-if __name__ =="__main__":
-  th = [-18.966, -72.777 ,7.720-90, 15.494 ,51.803, 170.749]
-  th =[0,0,0,0,0,0]
-  th = np.deg2rad(th)
-  mat1 = HTrans(th)
-  print(mat1)
-  tcp = np.array([-5,10,-80.9,1]).reshape(4,1)
-  print(mat1@tcp)
-
  
  

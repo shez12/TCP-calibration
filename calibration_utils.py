@@ -1,7 +1,5 @@
-
-
 import numpy as np
-import UR10Fk as fk  # Assuming UR10Fk is a custom module for forward kinematics
+import UR10Fk as fk  
 import pyswarms as ps
 import random
 import matplotlib.pyplot as plt
@@ -20,8 +18,7 @@ class OMOPSO:
                                 size>=6
         """
         self.joint_angle_list = joint_angle_list
-        self.choose = self.vectorchoose()
-
+        self.choose = self.vectorchoose() # choose six points randomly; 3 for plane vector, 3 for dot product
 
     def vectorchoose(self):
         '''
@@ -31,12 +28,18 @@ class OMOPSO:
         '''
         if len(self.joint_angle_list)<6:
             raise KeyError("joint angle list is too short")
+        
+        if len(self.joint_angle_list)<10:
+            print("recommmend to collect 10 points to get a better solution")
 
         randomPlane=[]
         while (len(randomPlane)<6):
             random_num = random.randint(0,len(self.joint_angle_list)-1)
-            randomPlane.append(random_num)
-            randomPlane = list(np.unique(randomPlane))
+            if random_num not in randomPlane:
+                randomPlane.append(random_num)
+        
+        # randomPlane.sort()
+        print("now choose",randomPlane)
         return randomPlane
 
     
@@ -59,30 +62,41 @@ class OMOPSO:
         equationList=[]
         for tcp in tcpList:
             tcp = np.array(tcp).reshape(3, 1)
-            vector_list = []
+            
+            vector_list = []# vector for plane
             # Calculate forward kinematics for current joint angles
-            fk_t = fk.HTrans(self.joint_angle_list[0])
+            fk_t = fk.HTrans(self.joint_angle_list[vector_choose[0]])
             fk_r1 = fk_t[0:3, 0:3]  # Rotation matrix
             fk_p1 = fk_t[0:3, 3]  # Position vector
             for i in vector_choose[1:3]:
                 fk_t2 = fk.HTrans(self.joint_angle_list[i])
                 fk_r2 = fk_t2[0:3, 0:3]
                 fk_p2 = fk_t2[0:3, 3]
-                vector_list.append(fk_r2 @ tcp - fk_r1 @ tcp + fk_p2 - fk_p1)
+                cross_vector = fk_r2 @ tcp - fk_r1 @ tcp + fk_p2 - fk_p1
+                cross_vector = cross_vector / np.linalg.norm(cross_vector)
+                vector_list.append(cross_vector)
            
             vector_list2 = []
             for i in vector_choose[3:]:
                     fk_t3 = fk.HTrans(self.joint_angle_list[i])
                     fk_r3 = fk_t3[0:3, 0:3]
                     fk_p3 = fk_t3[0:3, 3]
-                    vector_list2.append(fk_r3 @  tcp - fk_r1 @ tcp + fk_p3 - fk_p1)
+                    dot_vector = fk_r3 @ tcp - fk_r1 @ tcp + fk_p3 - fk_p1
+                    dot_vector = dot_vector / np.linalg.norm(dot_vector)
+                    vector_list2.append(dot_vector)
 
             # calculate planeVector
             planeVector = np.cross(self.mat2array(vector_list[0]), self.mat2array(vector_list[1]))
+            planeVector = planeVector / np.linalg.norm(planeVector)
+
+            
             equation = 0
-            for i in range(len(vector_list2)):
-                equation+=(abs(np.dot(self.mat2array(planeVector), self.mat2array(vector_list2[i]))))
+            # calculate the error
+            for i in vector_list2:
+                equation+=(abs(np.dot(self.mat2array(planeVector), self.mat2array(i))))
             equationList.append(equation)
+            
+
         return equationList
 
     @staticmethod
@@ -107,13 +121,12 @@ class OMOPSO:
         """
         def line_decrease(iteration,max_iters):
             return 0.9-0.5*(iteration/max_iters)
-
-        print("solving equations")
         swarm_size = 200
         dim = 3
         options = {"c1": 2, "c2": 2.5}
         lower_bound = np.array([-0.1,-0.3,0.2])
         upper_bound = np.array([0.1,0,0.5])
+
         constraints = (lower_bound, upper_bound)
         max_iters = 500
         optimizer = ps.single.GlobalBestPSO(
@@ -126,12 +139,11 @@ class OMOPSO:
         #Perform optimization
         for iter in range(max_iters):
             optimizer.options["w"] = line_decrease(iter,max_iters)
-            print("w is",line_decrease(iter,max_iters),"iter is", iter)
             cost, tcp = optimizer.optimize(self.func, iters=1, verbose=False)
-
+            print("w is",line_decrease(iter,max_iters),"iter is", iter,"cost is",cost)
 
         self.tcp= np.array(tcp).reshape(3, 1)
-        print("current solution :",self.tcp)
+        print("current solution :",self.tcp,"current cost",cost)
         return cost, tcp
 
 
@@ -208,7 +220,6 @@ class OMOPSO:
         '''
         verify the solution.
         '''
-        
         threshold = 0.0001
         dist_list = self.dist()
         n=0
@@ -272,31 +283,11 @@ class OMOPSO:
         
 
 
-
-
     def run(self):
-        # print("now choose",self.plane_point)
+
         self.omopso()
         # print(self.dist())
         self.verify()
-
-
-
-# if __name__ =="__main__":
-   
-#     test_joint_angles_degrees = [[0,0,4.592-90,3.883,40.894,93.418],
-#                          [-16.360,-69.026,3.156-90,3.776,39.137,133.812],    
-#                          [-18.966,-72.777,7.720-90,15.494,51.803,170.749],    
-#                          [-15.454,-72.356,10.098-90,30.897,27.092,129.078],    
-#                          [-17.059,-76.277,13.533-90,30.244,33.174,28.440],    
-#                          [-16.637,-72.496,8.437-90,33.510,43.938,50.159]]
-
-#     test_joint_angles_radians = [np.array(angles) * np.pi / 180 for angles in test_joint_angles_degrees] # 输出结果 test_joint_angles_radians
-#     data = OMOPSO(test_joint_angles_radians)
-#     data.run()
-
-
-#     pass
 
 
 
