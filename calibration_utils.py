@@ -113,7 +113,7 @@ class OMOPSO:
 
         return np.asarray(mat).flatten()
 
-    def omopso(self):
+    def pso(self):
         """
         Performs globalBestPSO to minimize the error metric.
         Returns:
@@ -232,7 +232,7 @@ class OMOPSO:
             print("current solution is not good enough, continue")
             n+=1
             self.choose = self.vectorchoose()
-            self.omopso()
+            self.pso()
             dist_list = self.dist()
 
         print("find solution: ", self.tcp)
@@ -285,7 +285,7 @@ class OMOPSO:
 
     def run(self):
 
-        self.omopso()
+        self.pso()
         # print(self.dist())
         self.verify()
 

@@ -24,5 +24,20 @@ for i in all_joint_positions:
     i[0],i[2]=i[2],i[0]
 
 
+
+print(all_joint_positions)
 data = OMOPSO(all_joint_positions)
 data.run()
+
+
+
+
+'''
+find solution:  [[-0.0093143 ]
+ [-0.20472612]
+ [ 0.43112701]]
+current best average dist:  2.5439500821596988e-17
+current max dist:  5.550436542893888e-17
+current min dist:  1.387609135723472e-17
+
+'''

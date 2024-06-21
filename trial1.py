@@ -12,7 +12,6 @@ points = [
         [308.47,-127.20,-123.43,15.71,38.45,187.06]
 
 ]
-
 '''
 find solution:  [[-0.00624954]
  [-0.22429878]
@@ -23,25 +22,26 @@ current min dist:  5.494997192669647e-17
 
 '''
 
-# fig = plt.figure()
-# ax = fig.add_subplot(111, projection='3d')
-# # Plot the points
-# points_array = []
-# for joint_angle in points:
-#         joint_angle = np.array(joint_angle) * np.pi / 180
-#         fk_t = fk.HTrans(joint_angle)
-#         points_array.append(fk_t[0:3, 3])
+points =[
+        [16.8904 , -89.0503 ,-164.0372, -146.8934,-111.9646 ,  56.3912],
+        [-63.0075 ,  49.7009 ,-130.3027 ,  31.8350 , -48.2738 , -12.0621],
+        [109.7163 , -48.8444,  101.6915   , 0.2825  , 69.6764 ,  89.6895],
+        [ -100.2001 , -35.9106 ,  93.1936 , -50.4896 , 141.7753,  -60.1214],
+        [97.9564 , -50.5699,  120.1946 , 166.9572 , -46.8543, -158.6920],
+        [-33.0750 ,  32.9867 , -97.8006 ,  -2.6677 ,-117.9886,  -20.8514]
+]
 
-# points_array = np.array([np.array(point).flatten() for point in points_array])
-# # Extract X, Y, Z coordinates
-# X = points_array[:, 0]
-# Y = points_array[:, 1]
-# Z = points_array[:, 2]
-
-# # print("point coordinate: " ,points_array)
-# ax.scatter(X, Y, Z, color='r', label='Points')
-# plt.show()
+"""
+find solution:  [[-0.00624934]
+ [-0.22430031]
+ [ 0.37710047]]
+current best average dist:  3.238150488487198e-17
+current max dist:  5.55111512312091e-17
+current min dist:  0.0
+ 
+ """
 
 test_joint_angles_radians = [np.array(angles) * np.pi / 180 for angles in points] # 输出结果 test_joint_angles_radians
-data = OMOPSO(test_joint_angles_radians)
+data = OMOPSO(test_joint_angles_radians) #input joint angles should be in radians
 data.run()
+
