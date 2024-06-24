@@ -8,6 +8,12 @@ current_joint_state = None
 joint_positions = None
 TCP = [0, 0, 0]
 
+# Set the movement step size (can be adjusted to control speed)
+movement_step_size = 0.001
+
+# Set the rate (frequency) of publishing joint state messages
+publish_rate = 10  # 10 Hz
+
 def joint_state_callback(msg):
     global current_joint_state
     global joint_positions
@@ -22,19 +28,25 @@ def move_robot(direction):
 
     T = ik.UR10_FK(joint_positions, TCP)
     if direction == "x+":
-        T[0, 3] += 0.001
+        T[0, 3] += movement_step_size
     elif direction == "x-":
-        T[0, 3] -= 0.001
+        T[0, 3] -= movement_step_size
     elif direction == "y+":
-        T[1, 3] += 0.001
+        T[1, 3] += movement_step_size
     elif direction == "y-":
-        T[1, 3] -= 0.001
+        T[1, 3] -= movement_step_size
     elif direction == "z+":
-        T[2, 3] += 0.001
+        T[2, 3] += movement_step_size
     elif direction == "z-":
-        T[2, 3] -= 0.001
+        T[2, 3] -= movement_step_size
 
     q = ik.UR10_IK(joint_positions, T, TCP)
+
+    # Check if the difference between current and calculated joint positions exceeds 10 degrees (0.1745 radians)
+    for i, (current, calculated) in enumerate(zip(joint_positions, q)):
+        if abs(current - calculated) > 0.1745:
+            rospy.logerr(f"Joint {i} movement exceeds 10 degrees limit. Current: {current}, Calculated: {calculated}")
+            return
 
     # Send joint angles
     joint_state_msg = JointState()
@@ -77,11 +89,14 @@ def main():
     listener = keyboard.Listener(on_press=on_press)
     listener.start()
 
-    rospy.spin()
+    # Set the rate of publishing messages
+    rate = rospy.Rate(publish_rate)
+
+    while not rospy.is_shutdown():
+        rate.sleep()
 
     # Ensure the listener is properly stopped
     listener.stop()
 
-    
 if __name__ == '__main__':
     main()

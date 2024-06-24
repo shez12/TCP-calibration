@@ -25,7 +25,7 @@ robot.tool = [1,1,1]
 print(robot)
 q1 = [0, 0, 0, 0, 0, 0]
 T = robot.fkine(q1)
-print(T)
-print(T.A)
-sol = robot.ik_LM(T,q0=q1)
-print(sol)    
+
+T.A[2,3] += 0.01
+q2 = robot.ikine_LM(T, q1)
+print(q2)
