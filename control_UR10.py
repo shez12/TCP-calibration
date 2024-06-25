@@ -1,31 +1,26 @@
+
 import rospy
-from sensor_msgs.msg import JointState
 from pynput import keyboard
-import UR10IK as ik
+from moveit_commander import RobotCommander, MoveGroupCommander
+import UR10IK as ik  # Assuming this is where your IK function is defined
 
 # Global variables to store the latest joint state and positions
-current_joint_state = None
 joint_positions = None
 TCP = [0, 0, 0]
-
 # Set the movement step size (can be adjusted to control speed)
-movement_step_size = 0.001
+global movement_step_size 
+movement_step_size= 0.0005
 
-# Set the rate (frequency) of publishing joint state messages
-publish_rate = 10  # 10 Hz
-
-def joint_state_callback(msg):
-    global current_joint_state
-    global joint_positions
-    current_joint_state = msg
-    joint_positions = list(current_joint_state.position)
-    joint_positions[0], joint_positions[2] = joint_positions[2], joint_positions[0]
 
 def move_robot(direction):
+
+    joint_positions = move_group.get_current_joint_values()
+
     if joint_positions is None:
         rospy.logwarn("Joint positions are not available yet.")
         return
 
+    # Calculate the target pose based on current joint positions and direction
     T = ik.UR10_FK(joint_positions, TCP)
     if direction == "x+":
         T[0, 3] += movement_step_size
@@ -40,22 +35,16 @@ def move_robot(direction):
     elif direction == "z-":
         T[2, 3] -= movement_step_size
 
+    # Perform inverse kinematics to get joint positions for the target pose
     q = ik.UR10_IK(joint_positions, T, TCP)
+    print(joint_positions)
+    print(q)
 
-    # Check if the difference between current and calculated joint positions exceeds 10 degrees (0.1745 radians)
-    for i, (current, calculated) in enumerate(zip(joint_positions, q)):
-        if abs(current - calculated) > 0.1745:
-            rospy.logerr(f"Joint {i} movement exceeds 10 degrees limit. Current: {current}, Calculated: {calculated}")
-            return
+    move_group.set_joint_value_target(q)
+    move_group.go()
+    move_group.stop()
 
-    # Send joint angles
-    joint_state_msg = JointState()
-    joint_state_msg.header.stamp = rospy.Time.now()
-    joint_state_msg.name = ['shoulder_pan_joint', 'shoulder_lift_joint', 'elbow_joint', 'wrist_1_joint', 'wrist_2_joint', 'wrist_3_joint']
-    joint_state_msg.position = q
-
-    # Publish the joint state message
-    pub.publish(joint_state_msg)
+    print("moving...")
 
 def on_press(key):
     try:
@@ -71,17 +60,29 @@ def on_press(key):
             move_robot("z+")
         elif key.char.lower() == "x":
             move_robot("z-")
+        elif key == keyboard.Key.esc:
+            rospy.signal_shutdown("closed...")
+        elif key.char.lower() == "m":
+            with open('joint_states.txt', 'a') as file:
+                file.write("Joint Positions: {}\n\n".format(move_group.get_current_joint_values()))
+            print("save point...")
+
     except AttributeError:
         pass
 
 def main():
-    global pub
+    global move_group
+    global robot
 
-    rospy.init_node('joint_state_saver')
 
-    rospy.Subscriber("/joint_states", JointState, joint_state_callback)
+    rospy.init_node('TCP_calibration')
 
-    pub = rospy.Publisher('/joint_states', JointState, queue_size=10)
+    # Initialize MoveIt commander objects
+    robot = RobotCommander()
+    move_group = MoveGroupCommander("manipulator")
+    
+
+
 
     rospy.loginfo("Press Q to move forward in x-axis; Press W to move backward in x-axis; A to move forward in y-axis; S to move backward in y-axis; Z to move forward in z-axis; X to move backward in z-axis.")
 
@@ -89,14 +90,12 @@ def main():
     listener = keyboard.Listener(on_press=on_press)
     listener.start()
 
-    # Set the rate of publishing messages
-    rate = rospy.Rate(publish_rate)
-
-    while not rospy.is_shutdown():
-        rate.sleep()
+    rospy.spin()
 
     # Ensure the listener is properly stopped
     listener.stop()
 
 if __name__ == '__main__':
     main()
+
+

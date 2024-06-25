@@ -23,9 +23,9 @@ robot = rtb.DHRobot([L1, L2, L3, L4, L5, L6], name='UR10')
 robot.tool = [1,1,1]
 # 打印机器人信息
 print(robot)
-q1 = [0, 0, 0, 0, 0, 0]
+q1 = [4, 0, 0, 0, 0, 0]
 T = robot.fkine(q1)
 
 T.A[2,3] += 0.01
-q2 = robot.ikine_LM(T, q1)
-print(q2)
+import UR10IK as ik
+q = ik.UR10_IK(q1, T.A, robot.tool)

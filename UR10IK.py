@@ -12,12 +12,12 @@ L5 = rtb.DHLink(d=0.1157,   a=0,    alpha=-np.pi/2, offset=0)
 L6 = rtb.DHLink(d=0.0922,  a=0,    alpha=0,     offset=0)
 
 ## Joint limits
-L1.qlim = [-np.pi/2, np.pi]
-L2.qlim = [-np.pi, np.pi]
-L3.qlim = [-np.pi, np.pi]
-L4.qlim = [-np.pi, np.pi]
-L5.qlim = [-np.pi, np.pi]
-L6.qlim = [-np.pi, np.pi]
+L1.qlim = [-2*np.pi, 2*np.pi]
+L2.qlim = [-2*np.pi, 2*np.pi]
+L3.qlim = [-2*np.pi, 2*np.pi]
+L4.qlim = [-2*np.pi, 2*np.pi]
+L5.qlim = [-2*np.pi, 2*np.pi]
+L6.qlim = [-2*np.pi, 2*np.pi]
 
 
 def UR10_IK(q0, T,tool):
@@ -33,7 +33,13 @@ def UR10_IK(q0, T,tool):
     '''
     robot = rtb.DHRobot([L1, L2, L3, L4, L5, L6], name='UR10')
     robot.tool = tool
-    q = robot.ikine_LM(T, q0)
+    q = robot.ikine_LM(T, q0).q
+
+    for num, i in enumerate(q):
+        while (q[num] - q0[num]) > np.pi:
+            q[num] -= 2*np.pi
+        while (q[num] - q0[num]) < -np.pi:
+            q[num] += 2*np.pi
     return q
     
 def UR10_FK(q,tool):
