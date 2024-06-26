@@ -4,7 +4,7 @@ import pyswarms as ps
 import random
 import matplotlib.pyplot as plt
 
-class OMOPSO:
+class tcp_cali:
     """
     Class for analyzing robot joint angles and calculating error based on Tool Center Point (TCP).
     """
@@ -33,12 +33,11 @@ class OMOPSO:
             print("recommmend to collect 10 points to get a better solution")
 
         randomPlane=[]
-        while (len(randomPlane)<6):
+        while (len(randomPlane)<6):# choose n points, n can be changed
             random_num = random.randint(0,len(self.joint_angle_list)-1)
             if random_num not in randomPlane:
                 randomPlane.append(random_num)
         
-        # randomPlane.sort()
         print("now choose",randomPlane)
         return randomPlane
 
@@ -88,8 +87,6 @@ class OMOPSO:
             # calculate planeVector
             planeVector = np.cross(self.mat2array(vector_list[0]), self.mat2array(vector_list[1]))
             planeVector = planeVector / np.linalg.norm(planeVector)
-
-            
             equation = 0
             # calculate the error
             for i in vector_list2:

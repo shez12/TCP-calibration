@@ -1,5 +1,5 @@
 import numpy as np
-from calibration_utils import OMOPSO
+from calibration_utils import tcp_cali
 
 
 
@@ -42,6 +42,6 @@ current min dist:  0.0
  """
 
 test_joint_angles_radians = [np.array(angles) * np.pi / 180 for angles in points] # 输出结果 test_joint_angles_radians
-data = OMOPSO(test_joint_angles_radians) #input joint angles should be in radians
+data = tcp_cali(test_joint_angles_radians) #input joint angles should be in radians
 data.run()
 

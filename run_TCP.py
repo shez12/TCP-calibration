@@ -1,31 +1,35 @@
 import numpy as np
-from calibration_utils import OMOPSO
+from calibration_utils import tcp_cali
 
 
-# 文件名
-filename = 'joint_states.txt'
+def run():
+    # 文件名
+    filename = 'joint_states.txt'
 
-# 初始化一个列表来存储所有的 joint positions
-all_joint_positions = []
-# 读取文件内容
-with open(filename, 'r') as file:
-    lines = file.readlines()
-    for line in lines:
-        # 查找包含 Joint Positions 的行
-        if 'Joint Positions:' in line:
-            # 提取 joint positions
-            positions_str = line.split('Joint Positions:')[1].strip().strip('[]')
-            # 将字符串转换为 float 列表
-            positions = tuple(map(float, positions_str.split(', ')))
-            # 添加到总列表中
-            all_joint_positions.append(list(positions))
+    # 初始化一个列表来存储所有的 joint positions
+    all_joint_positions = []
+    # 读取文件内容
+    with open(filename, 'r') as file:
+        lines = file.readlines()
+        for line in lines:
+            # 查找包含 Joint Positions 的行
+            if 'Joint Positions:' in line:
+                # 提取 joint positions
+                positions_str = line.split('Joint Positions:')[1].strip().strip('[]')
+                # 将字符串转换为 float 列表
+                positions = tuple(map(float, positions_str.split(', ')))
+                # 添加到总列表中
+                all_joint_positions.append(list(positions))
 
 
+    print(all_joint_positions)
+    data = tcp_cali(all_joint_positions)
+    data.run()
 
 
-print(all_joint_positions)
-data = OMOPSO(all_joint_positions)
-data.run()
+if __name__ == '__main__':
+    run()
+
 
 
 

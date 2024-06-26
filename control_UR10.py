@@ -1,26 +1,26 @@
-
 import rospy
 from pynput import keyboard
 from moveit_commander import RobotCommander, MoveGroupCommander
 import UR10IK as ik  # Assuming this is where your IK function is defined
+import os
 
 # Global variables to store the latest joint state and positions
-joint_positions = None
-TCP = [0, 0, 0]
-# Set the movement step size (can be adjusted to control speed)
-global movement_step_size 
-movement_step_size= 0.0005
+TCP = [0.03896421, -0.22570285, 0.37671283]#roughly the tool center point
+movement_step_size = 0.0005
+home_position = []
+fixed_joint_positions = []
 
+def move_to_specific_point(joint_positions):
+    move_group.set_joint_value_target(joint_positions)
+    print("moving to joint point", joint_positions, "...")
+    move_group.go()
+    move_group.stop()
 
 def move_robot(direction):
-
     joint_positions = move_group.get_current_joint_values()
-
     if joint_positions is None:
         rospy.logwarn("Joint positions are not available yet.")
         return
-
-    # Calculate the target pose based on current joint positions and direction
     T = ik.UR10_FK(joint_positions, TCP)
     if direction == "x+":
         T[0, 3] += movement_step_size
@@ -35,67 +35,54 @@ def move_robot(direction):
     elif direction == "z-":
         T[2, 3] -= movement_step_size
 
-    # Perform inverse kinematics to get joint positions for the target pose
     q = ik.UR10_IK(joint_positions, T, TCP)
-    print(joint_positions)
-    print(q)
-
     move_group.set_joint_value_target(q)
     move_group.go()
+    print("moving...")
     move_group.stop()
 
-    print("moving...")
 
 def on_press(key):
+    global movement_step_size
+    key_mapping = {
+        'q': "x+", 'w': "x-", 'a': "y+", 's': "y-", 'z': "z+", 'x': "z-",
+        'h': home_position, 'f': fixed_joint_positions
+    }
     try:
-        if key.char.lower() == "q":
-            move_robot("x+")
-        elif key.char.lower() == "w":
-            move_robot("x-")
-        elif key.char.lower() == "a":
-            move_robot("y+")
-        elif key.char.lower() == "s":
-            move_robot("y-")
-        elif key.char.lower() == "z":
-            move_robot("z+")
-        elif key.char.lower() == "x":
-            move_robot("z-")
-        elif key == keyboard.Key.esc:
+        if key == keyboard.Key.esc:
+            print("esc is pressed, exit...")
             rospy.signal_shutdown("closed...")
-        elif key.char.lower() == "m":
-            with open('joint_states.txt', 'a') as file:
-                file.write("Joint Positions: {}\n\n".format(move_group.get_current_joint_values()))
-            print("save point...")
-
+            os._exit(0)
+        elif hasattr(key, 'char'):
+            if key.char in key_mapping:
+                if isinstance(key_mapping[key.char], str):
+                    move_robot(key_mapping[key.char])
+                else:
+                    move_to_specific_point(key_mapping[key.char])
+            elif key.char == 'o':
+                movement_step_size = max(0.0001, movement_step_size - 0.0001)
+                print("current movement step size: ", movement_step_size)
+            elif key.char == 'p':
+                movement_step_size = min(0.001, movement_step_size + 0.0001)
+                print("current movement step size: ", movement_step_size)
+            elif key.char == 'm':
+                with open('joint_states.txt', 'a') as file:
+                    file.write("Joint Positions: {}\n\n".format(move_group.get_current_joint_values()))
+                print("save point...")
     except AttributeError:
-        pass
+        print("Invalid key pressed.")
+        raise
 
 def main():
-    global move_group
-    global robot
-
-
+    global move_group, robot
     rospy.init_node('TCP_calibration')
-
-    # Initialize MoveIt commander objects
     robot = RobotCommander()
     move_group = MoveGroupCommander("manipulator")
-    
-
-
-
-    rospy.loginfo("Press Q to move forward in x-axis; Press W to move backward in x-axis; A to move forward in y-axis; S to move backward in y-axis; Z to move forward in z-axis; X to move backward in z-axis.")
-
-    # Create a keyboard listener
+    rospy.loginfo("Use Q/W/A/S/Z/X to move, H to home, F for fixed positions, O/P to adjust step size, M to save positions, ESC to exit.")
     listener = keyboard.Listener(on_press=on_press)
     listener.start()
-
     rospy.spin()
-
-    # Ensure the listener is properly stopped
     listener.stop()
 
 if __name__ == '__main__':
     main()
-
-
