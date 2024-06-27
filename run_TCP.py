@@ -57,3 +57,50 @@ current min dist:  0.0
 
 
 '''
+
+
+'''
+桌子1,去掉第二个()
+
+find solution:  [[ 0.02974172]
+ [-0.21578594]
+ [ 0.38169355]]
+current best average dist:  4.423653034485612e-06
+current max dist:  1.1655874545117222e-05
+current min dist:  1.4900950838785246e-06
+'''
+
+'''
+桌子2,加固tool(TCP位置发生变化)，去掉第四个
+find solution:  [[ 0.02573503]
+ [-0.20825715]
+ [ 0.38056999]]
+current best average dist:  6.858201298472371e-06
+current max dist:  1.9350731749867313e-05
+current min dist:  1.1887639240644134e-06
+'''
+
+'''
+桌子3,去掉第二个
+find solution:  [[ 0.02741757]
+ [-0.20873842]
+ [ 0.37970762]]
+current best average dist:  4.191890422520002e-05
+current max dist:  0.00011072085120565273
+current min dist:  7.702141223152015e-07
+
+'''
+
+'''
+桌子4
+current solution : [[ 0.02853575]
+ [-0.20811175]
+ [ 0.38090266]] current cost 2.2724877535296173e-16
+current best average dist:  0.00016130348145457603
+current max dist:  0.0003740927926870646
+current min dist:  2.8338092652125222e-05
+
+'''
+
+
+
