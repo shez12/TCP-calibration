@@ -19,6 +19,7 @@ L4.qlim = [-2*np.pi, 2*np.pi]
 L5.qlim = [-2*np.pi, 2*np.pi]
 L6.qlim = [-2*np.pi, 2*np.pi]
 
+robot = rtb.DHRobot([L1, L2, L3, L4, L5, L6], name='UR10')
 
 def UR10_IK(q0, T,tool):
     '''
@@ -31,7 +32,7 @@ def UR10_IK(q0, T,tool):
     q: list, the joint angles
     
     '''
-    robot = rtb.DHRobot([L1, L2, L3, L4, L5, L6], name='UR10')
+
     robot.tool = tool
     q = robot.ikine_LM(T, q0).q
 
@@ -42,7 +43,7 @@ def UR10_IK(q0, T,tool):
             q[num] += 2*np.pi
     return q
     
-def UR10_FK(q,tool):
+def UR10_FK(q,tool=[0,0,0]):
     '''
     args:
     q: list, joint angles
@@ -51,7 +52,7 @@ def UR10_FK(q,tool):
     T: SE3, the end-effector pose
     
     '''
-    robot = rtb.DHRobot([L1, L2, L3, L4, L5, L6], name='UR10')
+
     robot.tool = tool
     T = robot.fkine(q)
     return T.A

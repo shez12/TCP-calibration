@@ -1,5 +1,5 @@
 import numpy as np
-import UR10Fk as fk  
+import UR10_toolbox as ut
 import pyswarms as ps
 import random
 import matplotlib.pyplot as plt
@@ -64,23 +64,23 @@ class tcp_cali:
             
             vector_list = []# vector for plane
             # Calculate forward kinematics for current joint angles
-            fk_t = fk.HTrans(self.joint_angle_list[vector_choose[0]])
+            fk_t = ut.UR10_FK(self.joint_angle_list[vector_choose[0]])
             fk_r1 = fk_t[0:3, 0:3]  # Rotation matrix
             fk_p1 = fk_t[0:3, 3]  # Position vector
             for i in vector_choose[1:3]:
-                fk_t2 = fk.HTrans(self.joint_angle_list[i])
+                fk_t2 = ut.UR10_FK(self.joint_angle_list[i])
                 fk_r2 = fk_t2[0:3, 0:3]
                 fk_p2 = fk_t2[0:3, 3]
-                cross_vector = fk_r2 @ tcp - fk_r1 @ tcp + fk_p2 - fk_p1
+                cross_vector = (fk_r2 @ tcp).flatten() - (fk_r1 @ tcp).flatten() + fk_p2.flatten() - fk_p1.flatten()
                 cross_vector = cross_vector / np.linalg.norm(cross_vector)
                 vector_list.append(cross_vector)
            
             vector_list2 = []
             for i in vector_choose[3:]:
-                    fk_t3 = fk.HTrans(self.joint_angle_list[i])
+                    fk_t3 = ut.UR10_FK(self.joint_angle_list[i])
                     fk_r3 = fk_t3[0:3, 0:3]
                     fk_p3 = fk_t3[0:3, 3]
-                    dot_vector = fk_r3 @ tcp - fk_r1 @ tcp + fk_p3 - fk_p1
+                    dot_vector = (fk_r3 @ tcp).flatten() - (fk_r1 @ tcp).flatten() + fk_p3.flatten() - fk_p1.flatten()
                     dot_vector = dot_vector / np.linalg.norm(dot_vector)
                     vector_list2.append(dot_vector)
 
@@ -151,10 +151,10 @@ class tcp_cali:
         '''
         points = []
         for joint_angle in self.joint_angle_list:
-            fk_t = fk.HTrans(joint_angle)
+            fk_t = ut.UR10_FK(joint_angle)
             fk_p = fk_t[0:3, 3]
             fk_R = fk_t[0:3, 0:3]
-            point = fk_R@self.tcp+fk_p
+            point = (fk_R @ self.tcp).flatten() + fk_p.flatten()
             points.append(point)
         points_array = np.array([np.array(point).flatten() for point in points])
         # Extract X, Y, Z coordinates
