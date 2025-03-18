@@ -230,7 +230,7 @@ class tcp_cali:
         for bar in bars:
             yval = bar.get_height()
             ax.text(bar.get_x() + bar.get_width()/2, yval, round(yval, 2), va='bottom')  # va: vertical alignment
-        ax.set_title('Statistical Measures of Data')
+        ax.set_title('Statistical Measures of Data(mm)')
         ax.set_ylabel('Value')
         plt.show()
 

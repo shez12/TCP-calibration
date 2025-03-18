@@ -14,13 +14,10 @@ This project implements a Tool Center Point (TCP) calibration method for a UR10 
     Selects three points (joint angles) randomly to find a normal vector.
 
 
-#### pso()
+#### sa()
 
-    Performs globalBestPSO to minimize the error metric.
+    Performs Simulated Annealing to minimize the error metric.
     Important parameters:
-                        swarm_size: number of particles
-                        dim: dimension of equation
-                        max_iters : number of iteriation
                         lower/upper bound : rough bound of tcp
 
 
@@ -34,15 +31,6 @@ This project implements a Tool Center Point (TCP) calibration method for a UR10 
     Runs the PSO optimization and verifies the solution.
 
 ### ...
-
---------------------------------------------------------
-## control_UR10.py
-This file provides a script to manually control a UR10 robot arm using keyboard inputs. The robot can be moved in Cartesian directions, and joint positions can be saved for later analysis or use. The script uses ROS (Robot Operating System) along with MoveIt! for controlling the robot and performing inverse kinematics. Data would be saved in joint_states.txt.
-
-    Prerequisites:
-    1. Make sure the UR10 is connected to IP address
-    2. Make sure the UR10 is imported with URCap (external control)
-    3. run moveit!
 
 --------------------------------------------------------
 ## run_TCP
