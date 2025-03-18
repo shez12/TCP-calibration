@@ -4,6 +4,7 @@ from moveit_commander import RobotCommander, MoveGroupCommander
 import UR10_toolbox as ik  # Assuming this is where your IK function is defined
 import os
 
+
 # Global variables to store the latest joint state and positions
 TCP = [0.03896421, -0.22570285, 0.37671283]#roughly the tool center point
 movement_step_size = 0.0005

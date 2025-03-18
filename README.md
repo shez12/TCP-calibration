@@ -39,6 +39,11 @@ This project implements a Tool Center Point (TCP) calibration method for a UR10 
 ## control_UR10.py
 This file provides a script to manually control a UR10 robot arm using keyboard inputs. The robot can be moved in Cartesian directions, and joint positions can be saved for later analysis or use. The script uses ROS (Robot Operating System) along with MoveIt! for controlling the robot and performing inverse kinematics. Data would be saved in joint_states.txt.
 
+    Prerequisites:
+    1. Make sure the UR10 is connected to IP address
+    2. Make sure the UR10 is imported with URCap (external control)
+    3. run moveit!
+
 --------------------------------------------------------
 ## run_TCP
 

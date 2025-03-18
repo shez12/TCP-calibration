@@ -22,7 +22,7 @@ T2[0:3,3] =point
 T3[0:3,3] =point
 
 ## find angle
-print(ik.UR10_IK(q3,T3,tool))
-print(ik.UR10_IK(q3,T2,tool))
 print(ik.UR10_IK(q3,T1,tool))
+print(ik.UR10_IK(q3,T2,tool))
+print(ik.UR10_IK(q3,T3,tool))
 
