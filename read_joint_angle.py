@@ -1,45 +1,39 @@
-import rospy
-from sensor_msgs.msg import JointState
 from pynput import keyboard
+from Robotic_Arm.rm_robot_interface import *
+from toolbox.arm_tb import ArmController
+import time
 
 # 全局变量用于存储最新的关节状态
 current_joint_state = None
 
-def joint_state_callback(msg):
-    global current_joint_state
-    current_joint_state = msg
+robo_arm = RoboticArm(rm_thread_mode_e.RM_TRIPLE_MODE_E)
+handle = robo_arm.rm_create_robot_arm("192.168.1.18", 8080)
+arm = ArmController(robo_arm, handle)
+
+def save_joint_state(joint_state):
+    with open('joint_states.txt', 'a') as file:
+        file.write("Joint Positions: {}\n\n".format(joint_state))
 
 def on_press(key):
-    if key == keyboard.Key.esc:
-        # 停止监听
-        return False
-    else:
-        save_joint_state()
-
-def save_joint_state():
-    if current_joint_state is not None:
-        joint_names = current_joint_state.name
-        joint_positions = current_joint_state.position
-
-        with open('joint_states.txt', 'a') as file:
-            file.write("Joint Names: {}\n".format(joint_names))
-            file.write("Joint Positions: {}\n\n".format(joint_positions))
-        
-        rospy.loginfo("Joint state saved!")
-
-def main():
-    global current_joint_state
-
-    rospy.init_node('joint_state_saver')
-
-    rospy.Subscriber("/joint_states", JointState, joint_state_callback)
-
-    rospy.loginfo("Press any key to save the current joint state. Press ESC to exit.")
-
-    # 创建一个键盘监听器
-    with keyboard.Listener(on_press=on_press) as listener:
-        rospy.spin()
-        listener.join()
+    try:
+        if key.char == 's':    # 按下s键保存关节状态
+            # joint_state = arm.get_joint()
+            # save_joint_state(joint_state)
+            print("Joint state saved!")
+        elif key.char == 'esc':    # 按下esc键退出程序
+            return False  # This will stop the listener
+    except AttributeError:
+        pass
 
 if __name__ == '__main__':
-    main()
+    # Set up the keyboard listener
+    listener = keyboard.Listener(on_press=on_press)
+    listener.start()
+    
+    print("Press 's' to save joint state, 'esc' to exit...")
+    
+    # Keep the program running until listener stops
+    while listener.is_alive():
+        time.sleep(0.1)
+    
+    print("Program ended")

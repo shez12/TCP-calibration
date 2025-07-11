@@ -1,8 +1,17 @@
 import numpy as np
-import UR10_toolbox as ut
+# import UR10_toolbox as ut
+from toolbox.arm_tb import ArmController
 import random
 import matplotlib.pyplot as plt
 from scipy.optimize import dual_annealing
+from Robotic_Arm.rm_robot_interface import *
+
+robo_arm = RoboticArm(rm_thread_mode_e.RM_TRIPLE_MODE_E)
+handle = robo_arm.rm_create_robot_arm("192.168.1.18", 8080)
+arm = ArmController(robo_arm, handle)
+arm_model = rm_robot_arm_model_e.RM_MODEL_RM_65_E  # RM_65机械臂
+force_type = rm_force_type_e.RM_MODEL_RM_B_E  # 标准版
+algo_handle = Algo(arm_model, force_type)
 
 class tcp_cali:
     """
@@ -56,11 +65,11 @@ class tcp_cali:
         
         vector_list = []# vector for plane
         # Calculate forward kinematics for current joint angles
-        fk_t = ut.UR10_FK(self.joint_angle_list[vector_choose[0]])
+        fk_t = arm.pose2se3(algo_handle.rm_algo_forward_kinematics(self.joint_angle_list[vector_choose[0]]))
         fk_r1 = fk_t[0:3, 0:3]  # Rotation matrix
         fk_p1 = fk_t[0:3, 3]  # Position vector
         for i in vector_choose[1:3]:
-            fk_t2 = ut.UR10_FK(self.joint_angle_list[i])
+            fk_t2 = arm.pose2se3(algo_handle.rm_algo_forward_kinematics(self.joint_angle_list[i]))
             fk_r2 = fk_t2[0:3, 0:3]
             fk_p2 = fk_t2[0:3, 3]
             cross_vector = (fk_r2 @ tcp).flatten() - (fk_r1 @ tcp).flatten() + fk_p2.flatten() - fk_p1.flatten()
@@ -69,7 +78,8 @@ class tcp_cali:
        
         vector_list2 = []
         for i in vector_choose[3:]:
-                fk_t3 = ut.UR10_FK(self.joint_angle_list[i])
+                # fk_t3 = ut.UR10_FK(self.joint_angle_list[i])
+                fk_t3 = arm.pose2se3(algo_handle.rm_algo_forward_kinematics(self.joint_angle_list[i]))
                 fk_r3 = fk_t3[0:3, 0:3]
                 fk_p3 = fk_t3[0:3, 3]
                 dot_vector = (fk_r3 @ tcp).flatten() - (fk_r1 @ tcp).flatten() + fk_p3.flatten() - fk_p1.flatten()
@@ -123,7 +133,7 @@ class tcp_cali:
         '''
         points = []
         for joint_angle in self.joint_angle_list:
-            fk_t = ut.UR10_FK(joint_angle)
+            fk_t = arm.pose2se3(algo_handle.rm_algo_forward_kinematics(joint_angle))
             fk_p = fk_t[0:3, 3]
             fk_R = fk_t[0:3, 0:3]
             point = (fk_R @ self.tcp).flatten() + fk_p.flatten()
